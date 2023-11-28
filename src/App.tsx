@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ChatCard } from "./components/ChatCard";
 import Header from "./components/Header";
 import { UserLogin } from "./components/UserLogin";
+import { ChatCard } from "./components/ChatCard";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import "./styles/App.css";
 import { v4 as uid } from "uuid";
