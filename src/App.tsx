@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { ChatCard } from "./components/ChatCard";
+import Header from "./components/Header";
+import { UserLogin } from "./components/UserLogin";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import "./styles/App.css";
+import { v4 as uid } from "uuid";
+import { addUser } from "./store/usersSlice";
+import { IUser } from "Users";
 
-function App() {
+const App = () => {
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector((state) => state);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState({});
+
+  const handleLogin = (name: string) => {
+    if (name.trim() !== "") {
+      const user = users.find((user) => user.name === name);
+      let requestedUser: IUser = { name };
+
+      if (user) {
+        requestedUser.id = user.id;
+      } else {
+        requestedUser.id = uid();
+        dispatch(addUser(requestedUser));
+      }
+      setUser(requestedUser);
+      setIsLoggedIn(true);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <div className="container">
+        {isLoggedIn ? (
+          <ChatCard user={user} />
+        ) : (
+          <UserLogin handleLogin={handleLogin} />
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
